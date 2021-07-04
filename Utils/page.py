@@ -1,4 +1,5 @@
-import os, requests
+import configparser
+import os, requests,logging
 
 
 class Helper(object):
@@ -44,3 +45,39 @@ class Helper(object):
         :return:
         """
         return os.path.join(os.path.dirname(os.path.dirname(__file__)),filePath,fileName)
+
+    def Makelog(self,log_content):
+        """定义日志级别"""
+        #定义日志文件
+        logFile = logging.FileHandler(self.dirname('log.tx','Log'),'a',encoding='utf-8')
+
+        # 设置log格式
+        fmt = logging.Formatter(fmt='%(asctime)s-%(name)s-%(levealname)s-%(module)s:%(message)s')
+
+        logFile.setFormatter(fmt)
+        logger1 = logging.Logger('logTest',level=logging.DEBUG)    # 定义日志
+        logger1.addHandler(logFile)
+        logger1.info(log_content)
+        logFile.close()
+
+    def readConfig(self):
+        """读取配置文件中的内容"""
+        savedata = []
+        config = configparser.ConfigParser()
+        config.read(self.dirname('config.ini','Config'),encoding='utf-8')
+
+        email_host = config.get("EMAIL","mail_host")
+        email_password = config.get("EMAIL","mail_pass")
+        email_sender = config.get("EMAIL", "sender")
+        email_user = config.get("EMAIL", "mail_user")
+        email_receiver = config.get("EMAIL", "receiver")
+        email_subject = config.get("EMAIL", "subject")
+
+        savedata.append(email_host)
+        savedata.append(email_password)
+        savedata.append(email_sender)
+        savedata.append(email_user)
+        savedata.append(email_receiver)
+        savedata.append(email_subject)
+
+        return savedata
